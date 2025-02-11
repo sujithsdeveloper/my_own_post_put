@@ -1,199 +1,227 @@
 import 'package:flutter/material.dart';
-import 'package:my_own_post_put/view/Stuedic/notification_screen/notification_screen_filter.dart';
+import 'package:my_own_post_put/styles/string_styles.dart';
+import 'package:my_own_post_put/utils/constants/color_constants.dart';
+import 'package:my_own_post_put/widgets/gradient_circle_avathar.dart';
+import 'package:hugeicons/hugeicons.dart';
+
+
 
 class NotificationDefaultScreen extends StatelessWidget {
   const NotificationDefaultScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // List of notifications
+    final List<Map<String, dynamic>> notifications = [
+      {
+        'title': 'chugith_mwonu commented: Supercool work 🌟',
+        'subtitle': '45s',
+        'isFollowNotification': false,
+        'isComment': true,
+        'isLike': false,
+        'isPost': false,
+        'isFollow': false,
+      },
+      {
+        'title': 'veshiii started following you',
+        'subtitle': '1m',
+        'isFollowNotification': true,
+        'isComment': false,
+        'isLike': false,
+        'isPost': false,
+        'isFollow': true,
+      },
+      {
+        'title': 'pranav mwon liked your posts',
+        'subtitle': '10m',
+        'isFollowNotification': false,
+        'isComment': false,
+        'isLike': true,
+        'isPost': false,
+        'isFollow': false,
+      },
+      {
+        'title': 'gokul mentioned you in a post: bla bla bla blu',
+        'subtitle': '1 hour ago',
+        'isFollowNotification': false,
+        'isComment': false,
+        'isLike': false,
+        'isPost': true,
+        'isFollow': false,
+      },
+      {
+        'title': 'vishnuu, jayalaskmi.jp and 350 others liked your posts',
+        'subtitle': 'Oct. 31',
+        'isFollowNotification': false,
+        'isComment': false,
+        'isLike': true,
+        'isPost': false,
+        'isFollow': false,
+      },
+      {
+        'title': 'obama started following you',
+        'subtitle': 'Oct. 31',
+        'isFollowNotification': true,
+        'isComment': false,
+        'isLike': false,
+        'isPost': false,
+        'isFollow': true,
+      },
+      {
+        'title': 'podakoppe liked your posts',
+        'subtitle': 'Oct. 30',
+        'isFollowNotification': false,
+        'isComment': false,
+        'isLike': true,
+        'isPost': false,
+        'isFollow': false,
+      },
+      {
+        'title': 'shihab mwonu.jpg commented: Awesome mockup 🌟',
+        'subtitle': 'Oct. 31',
+        'isFollowNotification': false,
+        'isComment': true,
+        'isLike': false,
+        'isPost': false,
+        'isFollow': false,
+      },
+    ];
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Notifications',
           style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
-        actions: [
-          InkWell(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => NotificationFilter(),
-                    ));
-              },
-              child: Icon(Icons.filter_list)),
-          SizedBox(
-            width: 9,
-          )
-        ],
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      body: RefreshIndicator(
+        backgroundColor: Colors.white,
+        onRefresh: () async {
+          return await Future.delayed(const Duration(seconds: 1));
+        },
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 24),
+                child: Text(
+                  "Recent",
+                  style: StringStyle.normalText(size: 20, isBold: true),
+                ),
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: notifications.length,
+                itemBuilder: (context, index) {
+                  final notification = notifications[index];
+
+                  return NotificationTile(
+                      isComment: notification['isComment'],
+                      isLike: notification['isLike'],
+                      isFollow: notification['isFollow'],
+                      isPost: notification['isPost'],
+                      title: notification['title'],
+                      subtitle: notification['subtitle'],
+                      isFollowNotification:
+                          notification['isFollowNotification']);
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  static Widget NotificationTile(
+      {required String title,
+      required String subtitle,
+      required bool isComment,
+      required bool isLike,
+      required bool isPost,
+      required bool isFollow,
+      bool isFollowNotification = false}) {
+    return ListTile(
+        leading: Stack(
+          clipBehavior: Clip.none,
           children: [
-            SizedBox(height: 20),
-            Text(
-              'RECENT',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            GradientCircleAvathar(
+              radius: 36,
+              child: Icon(
+                Icons.notifications,
+                size: 16,
+                color: ColorConstants.secondaryColor,
+              ),
             ),
-            SizedBox(height: 10),
-            ListView(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              children: [
-                _buildNotificationTile(
-                  icon: Icons.comment,
-                  title: 'chugith_mwonu commented: Supercool work 🌟',
-                  subtitle: '4fs',
-                ),
-                _buildNotificationTileWithFollow(
-                  icon: Icons.person_add,
-                  title: 'veshiii started following you',
-                  subtitle: '1m',
-                ),
-                _buildNotificationTile(
-                  icon: Icons.thumb_up,
-                  title: 'pranav mwon liked your posts',
-                  subtitle: '10m',
-                ),
-                Text(
-                  '7 Days ago',
-                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 17),
-                ),
-                _buildNotificationTile(
-                  icon: Icons.tag,
-                  title: 'gokul mentioned you in a post: bla bla bla blu',
-                  subtitle: '1 hour ago',
-                ),
-                _buildNotificationTile(
-                  icon: Icons.thumb_up,
-                  title:
-                      'vishnuu, jayalaskmi.jp and 350 others liked your posts',
-                  subtitle: 'Oct. 31',
-                ),
-                _buildNotificationTile(
-                  icon: Icons.person_add,
-                  title: 'obama started following you',
-                  subtitle: 'Oct. 31',
-                ),
-                _buildNotificationTile(
-                  icon: Icons.thumb_up,
-                  title: 'podakoppe liked your posts',
-                  subtitle: 'Oct. 30',
-                ),
-                _buildNotificationTile(
-                  icon: Icons.comment,
-                  title: 'shihab mwonu.jpg commented: Awesome mockup 🌟',
-                  subtitle: 'Oct. 31',
-                ),
-              ],
+            Positioned(
+              bottom: -4,
+              right: -4,
+              child: CircleAvatar(
+                  radius: 8,
+                  backgroundColor: Colors.white,
+                  child: Builder(
+                    builder: (context) {
+                      if (isLike) {
+                        return Icon(
+                          HugeIcons.strokeRoundedThumbsUp,
+                          size: 12,
+                          color: Colors.blue,
+                        );
+                      } else if (isComment) {
+                        return Icon(
+                          HugeIcons.strokeRoundedMessage01,
+                          size: 12,
+                          color: Colors.blue,
+                        );
+                      } else if (isPost) {
+                        return Icon(
+                          HugeIcons.strokeRoundedTag01,
+                          size: 12,
+                          color: Colors.blue,
+                        );
+                      } else if (isFollow) {
+                        return Icon(
+                          Icons.person_outline,
+                          size: 12,
+                          color: Colors.blue,
+                        );
+                      } else {
+                        return SizedBox();
+                      }
+                    },
+                  )),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  static Widget _buildNotificationTileWithFollow({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-  }) {
-    return ListTile(
-      leading: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          CircleAvatar(
-            backgroundColor: Colors.blue,
-            radius: 18,
-            child: Icon(
-              Icons.notifications,
-              size: 16,
-              color: Colors.white,
-            ),
-          ),
-          Positioned(
-            bottom: -4,
-            right: -4,
-            child: CircleAvatar(
-              radius: 8,
-              backgroundColor: Colors.white,
-              child: Icon(
-                icon,
-                size: 12,
-                color: Colors.blue,
-              ),
-            ),
-          ),
-        ],
-      ),
-      title: Text(
-        title,
-        style: TextStyle(fontSize: 14),
-      ),
-      subtitle: Text(subtitle),
-      trailing: Container(
-        padding: EdgeInsets.symmetric(horizontal: 25, vertical: 8),
-        decoration: BoxDecoration(
-          color: Colors.yellow, // colour maaatt mwonu
-          borderRadius: BorderRadius.circular(20),
+        title: Text(
+          title,
+          style: const TextStyle(fontSize: 14),
         ),
-        child: Text(
-          'Follow',
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
-        ),
-      ),
-    );
-  }
-
-  static Widget _buildNotificationTile({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-  }) {
-    return ListTile(
-      leading: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          CircleAvatar(
-            backgroundColor: Colors.blue,
-            radius: 18,
-            child: Icon(
-              Icons.notifications,
-              size: 16,
-              color: Colors.white,
-            ),
-          ),
-          Positioned(
-            bottom: -4,
-            right: -4,
-            child: CircleAvatar(
-              radius: 8,
-              backgroundColor: Colors.white,
-              child: Icon(
-                icon,
-                size: 12,
-                color: Colors.blue,
-              ),
-            ),
-          ),
-        ],
-      ),
-      title: Text(
-        title,
-        style: TextStyle(fontSize: 14),
-      ),
-      subtitle: Text(subtitle),
-    );
+        subtitle: Text(subtitle),
+        trailing: isFollowNotification
+            ? Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 25, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.yellow,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Text(
+                  'Follow',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              )
+            : null);
   }
 }
